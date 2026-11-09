@@ -1,0 +1,182 @@
+{
+  "entities": {
+    "Subscriber": {
+      "title": "Subscriber",
+      "description": "Represents an ISP subscriber with full network and billing profile.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "accountNumber": { "type": "string" },
+        "fullName": { "type": "string" },
+        "contactNumber": { "type": "string" },
+        "address": { "type": "string" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "installationDate": { "type": "string" },
+        "planId": { "type": "string" },
+        "planName": { "type": "string" },
+        "monthlyFee": { "type": "number" },
+        "olt": { "type": "string" },
+        "ponPort": { "type": "string" },
+        "napBox": { "type": "string" },
+        "napPort": { "type": "string" },
+        "splitter": { "type": "string" },
+        "onuSerial": { "type": "string" },
+        "pppoeUsername": { "type": "string" },
+        "pppoePassword": { "type": "string" },
+        "mikrotikProfile": { "type": "string" },
+        "connectionStatus": { "type": "string", "enum": ["Active", "Suspended", "Disconnected"] },
+        "billingDueDate": { "type": "integer" },
+        "remarks": { "type": "string" },
+        "photoUrl": { "type": "string" },
+        "currentBalance": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "accountNumber", "fullName", "contactNumber", "planName", "monthlyFee", "connectionStatus"]
+    },
+    "Bill": {
+      "title": "Bill",
+      "description": "Represents a monthly billing record for a subscriber.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "subscriberId": { "type": "string" },
+        "accountNumber": { "type": "string" },
+        "subscriberName": { "type": "string" },
+        "billingPeriod": { "type": "string" },
+        "previousBalance": { "type": "number" },
+        "monthlyFee": { "type": "number" },
+        "totalAmountDue": { "type": "number" },
+        "amountPaid": { "type": "number" },
+        "remainingBalance": { "type": "number" },
+        "status": { "type": "string", "enum": ["Unpaid", "Partially Paid", "Paid", "Overdue"] },
+        "dueDate": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "subscriberId", "accountNumber", "subscriberName", "billingPeriod", "totalAmountDue", "status"]
+    },
+    "Collection": {
+      "title": "Collection",
+      "description": "Represents a payment collection transaction from a subscriber.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "subscriberId": { "type": "string" },
+        "accountNumber": { "type": "string" },
+        "subscriberName": { "type": "string" },
+        "billId": { "type": "string" },
+        "amount": { "type": "number" },
+        "paymentMethod": { "type": "string" },
+        "referenceNumber": { "type": "string" },
+        "paymentDate": { "type": "string" },
+        "receivedBy": { "type": "string" },
+        "receiptNumber": { "type": "string" },
+        "remarks": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "subscriberId", "accountNumber", "amount", "paymentMethod", "receiptNumber"]
+    },
+    "Expense": {
+      "title": "Expense",
+      "description": "Represents an operational expense for the ISP.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "category": { "type": "string" },
+        "description": { "type": "string" },
+        "amount": { "type": "number" },
+        "transactionDate": { "type": "string" },
+        "responsiblePerson": { "type": "string" },
+        "paymentMethod": { "type": "string" },
+        "referenceNumber": { "type": "string" },
+        "receiptUrl": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "category", "description", "amount", "transactionDate", "paymentMethod"]
+    },
+    "Router": {
+      "title": "Router",
+      "description": "Represents a MikroTik router device configuration and status.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "ipAddress": { "type": "string" },
+        "apiPort": { "type": "integer" },
+        "username": { "type": "string" },
+        "password": { "type": "string" },
+        "location": { "type": "string" },
+        "model": { "type": "string" },
+        "status": { "type": "string", "enum": ["Online", "Offline", "Warning"] },
+        "activeSessionsCount": { "type": "integer" },
+        "cpuLoad": { "type": "integer" },
+        "uptime": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "name", "ipAddress", "apiPort", "username", "status"]
+    },
+    "Profile": {
+      "title": "Profile",
+      "description": "Bandwidth speed profile for MikroTik PPPoE accounts.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "downloadSpeedMbps": { "type": "integer" },
+        "uploadSpeedMbps": { "type": "integer" },
+        "rateLimit": { "type": "string" },
+        "price": { "type": "number" },
+        "isDefault": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "name", "downloadSpeedMbps", "uploadSpeedMbps", "price"]
+    },
+    "ActivityLog": {
+      "title": "ActivityLog",
+      "description": "Audit and operational activity log.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "action": { "type": "string" },
+        "routerName": { "type": "string" },
+        "targetSubscriber": { "type": "string" },
+        "details": { "type": "string" },
+        "status": { "type": "string", "enum": ["Success", "Failed"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "action", "details", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/subscribers/{subscriberId}": {
+      "schema": { "$ref": "#/entities/Subscriber" },
+      "description": "Subscribers managed by the ISP operator."
+    },
+    "/users/{userId}/bills/{billId}": {
+      "schema": { "$ref": "#/entities/Bill" },
+      "description": "Monthly bills generated for subscribers."
+    },
+    "/users/{userId}/collections/{collectionId}": {
+      "schema": { "$ref": "#/entities/Collection" },
+      "description": "Payment collections recorded for subscribers."
+    },
+    "/users/{userId}/expenses/{expenseId}": {
+      "schema": { "$ref": "#/entities/Expense" },
+      "description": "ISP operational expense transactions."
+    },
+    "/users/{userId}/routers/{routerId}": {
+      "schema": { "$ref": "#/entities/Router" },
+      "description": "MikroTik routers configured in the ISP network."
+    },
+    "/users/{userId}/profiles/{profileId}": {
+      "schema": { "$ref": "#/entities/Profile" },
+      "description": "Bandwidth speed profiles."
+    },
+    "/users/{userId}/activity_logs/{logId}": {
+      "schema": { "$ref": "#/entities/ActivityLog" },
+      "description": "Audit log of administrative and network operations."
+    }
+  }
+}

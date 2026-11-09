@@ -1,0 +1,198 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidSubscriber(data) {
+      return data.userId is string &&
+             data.accountNumber is string && data.accountNumber.size() > 0 &&
+             data.fullName is string && data.fullName.size() > 0 &&
+             data.contactNumber is string &&
+             data.planName is string &&
+             data.monthlyFee is number && data.monthlyFee >= 0 &&
+             data.connectionStatus in ['Active', 'Suspended', 'Disconnected'] &&
+             (!('address' in data) || data.address is string) &&
+             (!('latitude' in data) || data.latitude is number) &&
+             (!('longitude' in data) || data.longitude is number) &&
+             (!('installationDate' in data) || data.installationDate is string) &&
+             (!('planId' in data) || data.planId is string) &&
+             (!('olt' in data) || data.olt is string) &&
+             (!('ponPort' in data) || data.ponPort is string) &&
+             (!('napBox' in data) || data.napBox is string) &&
+             (!('napPort' in data) || data.napPort is string) &&
+             (!('splitter' in data) || data.splitter is string) &&
+             (!('onuSerial' in data) || data.onuSerial is string) &&
+             (!('pppoeUsername' in data) || data.pppoeUsername is string) &&
+             (!('pppoePassword' in data) || data.pppoePassword is string) &&
+             (!('mikrotikProfile' in data) || data.mikrotikProfile is string) &&
+             (!('billingDueDate' in data) || data.billingDueDate is int) &&
+             (!('remarks' in data) || data.remarks is string) &&
+             (!('photoUrl' in data) || data.photoUrl is string) &&
+             (!('currentBalance' in data) || data.currentBalance is number) &&
+             (!('createdAt' in data) || (data.createdAt is timestamp && data.createdAt <= request.time)) &&
+             (!('updatedAt' in data) || (data.updatedAt is timestamp && data.updatedAt <= request.time));
+    }
+
+    function isValidBill(data) {
+      return data.userId is string &&
+             data.subscriberId is string &&
+             data.accountNumber is string &&
+             data.subscriberName is string &&
+             data.billingPeriod is string &&
+             data.totalAmountDue is number &&
+             data.status in ['Unpaid', 'Partially Paid', 'Paid', 'Overdue'] &&
+             (!('previousBalance' in data) || data.previousBalance is number) &&
+             (!('monthlyFee' in data) || data.monthlyFee is number) &&
+             (!('amountPaid' in data) || data.amountPaid is number) &&
+             (!('remainingBalance' in data) || data.remainingBalance is number) &&
+             (!('dueDate' in data) || data.dueDate is string) &&
+             (!('createdAt' in data) || (data.createdAt is timestamp && data.createdAt <= request.time)) &&
+             (!('updatedAt' in data) || (data.updatedAt is timestamp && data.updatedAt <= request.time));
+    }
+
+    function isValidCollection(data) {
+      return data.userId is string &&
+             data.subscriberId is string &&
+             data.accountNumber is string &&
+             data.amount is number && data.amount > 0 &&
+             data.paymentMethod is string &&
+             data.receiptNumber is string &&
+             (!('subscriberName' in data) || data.subscriberName is string) &&
+             (!('billId' in data) || data.billId is string) &&
+             (!('referenceNumber' in data) || data.referenceNumber is string) &&
+             (!('paymentDate' in data) || data.paymentDate is string) &&
+             (!('receivedBy' in data) || data.receivedBy is string) &&
+             (!('remarks' in data) || data.remarks is string) &&
+             (!('createdAt' in data) || (data.createdAt is timestamp && data.createdAt <= request.time));
+    }
+
+    function isValidExpense(data) {
+      return data.userId is string &&
+             data.category is string &&
+             data.description is string &&
+             data.amount is number && data.amount > 0 &&
+             data.transactionDate is string &&
+             data.paymentMethod is string &&
+             (!('responsiblePerson' in data) || data.responsiblePerson is string) &&
+             (!('referenceNumber' in data) || data.referenceNumber is string) &&
+             (!('receiptUrl' in data) || data.receiptUrl is string) &&
+             (!('createdAt' in data) || (data.createdAt is timestamp && data.createdAt <= request.time));
+    }
+
+    function isValidRouter(data) {
+      return data.userId is string &&
+             data.name is string && data.name.size() > 0 &&
+             data.ipAddress is string &&
+             data.apiPort is int &&
+             data.username is string &&
+             data.status in ['Online', 'Offline', 'Warning'] &&
+             (!('password' in data) || data.password is string) &&
+             (!('location' in data) || data.location is string) &&
+             (!('model' in data) || data.model is string) &&
+             (!('activeSessionsCount' in data) || data.activeSessionsCount is int) &&
+             (!('cpuLoad' in data) || data.cpuLoad is int) &&
+             (!('uptime' in data) || data.uptime is string) &&
+             (!('createdAt' in data) || (data.createdAt is timestamp && data.createdAt <= request.time));
+    }
+
+    function isValidProfile(data) {
+      return data.userId is string &&
+             data.name is string &&
+             data.downloadSpeedMbps is int &&
+             data.uploadSpeedMbps is int &&
+             data.price is number &&
+             (!('rateLimit' in data) || data.rateLimit is string) &&
+             (!('isDefault' in data) || data.isDefault is bool) &&
+             (!('createdAt' in data) || (data.createdAt is timestamp && data.createdAt <= request.time));
+    }
+
+    function isValidActivityLog(data) {
+      return data.userId is string &&
+             data.action is string &&
+             data.details is string &&
+             data.status in ['Success', 'Failed'] &&
+             (!('routerName' in data) || data.routerName is string) &&
+             (!('targetSubscriber' in data) || data.targetSubscriber is string) &&
+             (!('createdAt' in data) || (data.createdAt is timestamp && data.createdAt <= request.time));
+    }
+
+    function isValidPlan(data) {
+      return data.userId is string &&
+             data.name is string && data.name.size() > 0 &&
+             data.downloadSpeedMbps is number && data.downloadSpeedMbps > 0 &&
+             data.uploadSpeedMbps is number && data.uploadSpeedMbps > 0 &&
+             data.monthlyPrice is number && data.monthlyPrice >= 0 &&
+             data.status in ['Active', 'Inactive'] &&
+             (!('description' in data) || data.description is string) &&
+             (!('createdAt' in data) || (data.createdAt is timestamp && data.createdAt <= request.time)) &&
+             (!('updatedAt' in data) || (data.updatedAt is timestamp && data.updatedAt <= request.time));
+    }
+
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+
+      match /plans/{planId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidPlan(request.resource.data);
+        allow update: if isOwner(userId) && isValidPlan(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+
+      match /subscribers/{subscriberId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidSubscriber(request.resource.data);
+        allow update: if isOwner(userId) && isValidSubscriber(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+
+      match /bills/{billId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidBill(request.resource.data);
+        allow update: if isOwner(userId) && isValidBill(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+
+      match /collections/{collectionId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidCollection(request.resource.data);
+        allow update: if isOwner(userId) && isValidCollection(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+
+      match /expenses/{expenseId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidExpense(request.resource.data);
+        allow update: if isOwner(userId) && isValidExpense(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+
+      match /routers/{routerId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidRouter(request.resource.data);
+        allow update: if isOwner(userId) && isValidRouter(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+
+      match /profiles/{profileId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidProfile(request.resource.data);
+        allow update: if isOwner(userId) && isValidProfile(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+
+      match /activity_logs/{logId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidActivityLog(request.resource.data);
+        allow update: if isOwner(userId) && isValidActivityLog(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+    }
+  }
+}

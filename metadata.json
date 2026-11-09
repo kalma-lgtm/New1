@@ -1,0 +1,6 @@
+{
+  "name": "NetPulse ISP",
+  "description": "Comprehensive ISP billing, subscriber lifecycle, expense tracking, interactive GPS mapping, and MikroTik router management platform.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
